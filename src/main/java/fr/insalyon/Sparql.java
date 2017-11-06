@@ -11,23 +11,21 @@ public class Sparql
 {
     public JSONArray GetDataSparql(JSONObject jsonFromSpotlight)
     {
+        JSONArray jsonReturn = new JSONArray();
+
         try
         {
             String request = createRequest(jsonFromSpotlight);
-
-
+            
             String URL = "http://fr.dbpedia.org/sparql?query=" + URLEncoder.encode(request,"UTF-8");
 
-            System.out.println(URL);
             java.net.URL url = new URL(URL);
 
             String response = HttpGet.sendGET(url);
 
             JSONObject jsonResponse = new JSONObject(response);
 
-            JSONArray jsonReturn = jsonResponse.getJSONObject("results").getJSONArray("bindings");
-
-            System.out.println(jsonReturn.toString());
+            jsonReturn = jsonResponse.getJSONObject("results").getJSONArray("bindings");
 
             return jsonReturn;
         }
@@ -35,6 +33,8 @@ public class Sparql
         {
             System.out.println(e);
         }
+
+        return jsonReturn;
     }
 
     private String createRequest(JSONObject jsonFromSpotlight)

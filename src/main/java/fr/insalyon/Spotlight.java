@@ -21,8 +21,6 @@ public class Spotlight
 
             String response = HttpGet.sendGET(url);
 
-            System.out.println("RESPONSE DE SPOT : " + response);
-
             JSONObject jsonResponse = new JSONObject(response);
 
             JSONArray listeURI = jsonResponse.getJSONArray("Resources");
@@ -39,9 +37,6 @@ public class Spotlight
             }
 
             JsonSpotlightResponse.put("URIs", arrayOfURI);
-
-            //Print of the Json
-            System.out.println(JsonSpotlightResponse.toString());
 
             return JsonSpotlightResponse;
         }
