@@ -3,6 +3,7 @@ package fr.insalyon;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import main.java.fr.insalyon.HttpGet;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.XML;

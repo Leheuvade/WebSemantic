@@ -1,6 +1,11 @@
-package fr.insalyon;
+package main.java.fr.insalyon;
 
+import fr.insalyon.HTMLContentParser;
+import fr.insalyon.HTTPQueryHandler;
+import fr.insalyon.Spotlight;
 import org.json.JSONObject;
+
+import java.util.List;
 
 public class Main {
 
@@ -12,5 +17,24 @@ public class Main {
 
         sparql.GetDataSparql(jsonFromSpotlight);
 
+
+        List<String> liens = null;
+        try {
+            liens = HTMLContentParser.getListURLForDuckDuckGo(HTTPQueryHandler.queryDuckDuckGo("Donald"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+
+        for (String lien : liens) {
+            List<String> paragraphs = null;
+            try {
+                paragraphs = HTMLContentParser.getParagraphsForDocument(HTTPQueryHandler.getHTML(lien));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            System.out.println(paragraphs);
+        }
     }
 }

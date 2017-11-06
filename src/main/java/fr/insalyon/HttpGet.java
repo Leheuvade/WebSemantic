@@ -1,4 +1,4 @@
-package fr.insalyon;
+package main.java.fr.insalyon;
 
 import java.io.BufferedReader;
 import java.io.IOException;
