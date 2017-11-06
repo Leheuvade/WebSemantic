@@ -1,5 +1,7 @@
 package fr.insalyon;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.swing.*;
@@ -12,6 +14,8 @@ import java.util.List;
 public class MainWindow extends JFrame implements ActionListener {
     JTextField m_searchText;
     JButton m_searchButton;
+
+    JTextArea m_resultArea;
 
     //public final Dimension DIM_SEARCHBAR = new Dimension (300, 400);
 
@@ -39,6 +43,10 @@ public class MainWindow extends JFrame implements ActionListener {
 
         pane.add(searchBar, BorderLayout.PAGE_START);
 
+        m_resultArea = new JTextArea();
+
+        pane.add(m_resultArea, BorderLayout.CENTER);
+
         pack();
         setSize(1200,700);
         setVisible(true);
@@ -46,12 +54,20 @@ public class MainWindow extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == m_searchButton || e.getSource() == m_searchText) {
-            JSONObject resultats = recupererResultats(m_searchText.getText());
+            JSONArray resultats = recupererResultats(m_searchText.getText());
 
+            m_resultArea.setText(resultats.toString());
         }
     }
 
-    public JSONObject recupererResultats(String requete) {
+    private void extendArray(JSONArray dest, JSONArray src)
+            throws JSONException {
+        for (int i = 0; i < src.length(); i++) {
+            dest.put(src.get(i));
+        }
+    }
+
+    public JSONArray recupererResultats(String requete) {
         java.util.List<String> liens = null;
         try {
             liens = HTMLContentParser.getListURLForDuckDuckGo(HTTPQueryHandler.queryDuckDuckGo(requete));
@@ -62,10 +78,13 @@ public class MainWindow extends JFrame implements ActionListener {
 
         Spotlight s = new Spotlight();
 
+        JSONArray tableOfURIs = new JSONArray();
+
         for (String lien : liens) {
             try {
                 List<String> paragraphs = HTMLContentParser.getParagraphsForDocument(HTTPQueryHandler.getHTML(lien));
 
+                JSONArray URIs = new JSONArray();
                 for (String p : paragraphs) {
                     if (p.isEmpty()) {
                         continue;
@@ -73,15 +92,15 @@ public class MainWindow extends JFrame implements ActionListener {
 
                     JSONObject json = s.GetLinksSpotlight(p, 0.8, 0, "fr");
 
-                    return json;
+                    extendArray(URIs, json.getJSONArray("URIs"));
                 }
+
+                tableOfURIs.put(URIs);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            return null;
         }
 
-        return null;
+        return tableOfURIs;
     }
 }
