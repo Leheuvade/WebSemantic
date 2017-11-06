@@ -1,15 +1,12 @@
-package main.java.fr.insalyon;
+package fr.insalyon;
 
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import jdk.nashorn.internal.parser.JSONParser;
-import main.java.fr.insalyon.HttpGet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.XML;
 
 import javax.net.ssl.SSLContext;
 
@@ -41,6 +38,7 @@ public class Spotlight
                 //Creation du Json final
                 JSONArray arrayOfURI = new JSONArray();
 
+
                 for (int i = 0; i < listeURI.length(); ++i) {
                     String URI = listeURI.getJSONObject(i).getString("@URI");
 
@@ -59,8 +57,8 @@ public class Spotlight
         }
         catch (Exception e)
         {
-            System.out.println(e.getStackTrace());
-            throw e;
+            e.printStackTrace();
         }
+        return null;
     }
 }

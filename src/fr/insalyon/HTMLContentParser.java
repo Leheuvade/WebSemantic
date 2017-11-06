@@ -3,17 +3,7 @@ package fr.insalyon;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
-import javax.xml.bind.annotation.W3CDomHandler;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +14,9 @@ public class HTMLContentParser {
 
         List<String> liens = new ArrayList<>();
         for (Element elem : newsHeadlines) {
-            liens.add(elem.attributes().get("href"));
+            if (elem.siblingElements().select("a.badge--ad").isEmpty()) {
+                liens.add(elem.attributes().get("href"));
+            }
         }
 
         return liens;

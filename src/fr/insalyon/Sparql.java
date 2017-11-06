@@ -1,4 +1,4 @@
-package main.java.fr.insalyon;
+package fr.insalyon;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

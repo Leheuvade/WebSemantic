@@ -1,10 +1,10 @@
-package main.java.fr.insalyon;
+package fr.insalyon;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
-import static main.java.fr.insalyon.Spotlight.GetLinksSpotlight;
+import static fr.insalyon.Spotlight.GetLinksSpotlight;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestSpotlight
