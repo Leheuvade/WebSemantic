@@ -6,8 +6,11 @@ public class Main {
 
     public static void main(String[] args) {
 	    Spotlight s = new Spotlight();
-	    JSONObject json = s.GetLinksSpotlight("First documented in the 13th century, Berlin was the capital of the Kingdom of Prussia (1701–1918), the German Empire (1871–1918), the Weimar Republic (1919–33) and the Third Reich (1933–45). Berlin in the 1920s was the third largest municipality in the world. After World War II, the city became divided into East Berlin -- the capital of East Germany -- and West Berlin, a West German exclave surrounded by the Berlin Wall from 1961–89. Following German reunification in 1990, the city regained its status as the capital of Germany, hosting 147 foreign embassies.", 0.8, 0, "en");
+	    Sparql sparql = new Sparql();
 
-        System.out.println(json.toString());
+        JSONObject jsonFromSpotlight = s.GetLinksSpotlight("La ville de Berlin se situe dans le nord-est de l'Allemagne, dans la plaine germano-polonaise, à 33 m d'altitude, au confluent de la Spree et de la Havel. Une particularité de la ville est la présence de nombreux lacs et rivières, le long des cours d'eau. On en trouve plusieurs à l'ouest, mais aussi à l'est avec le Müggelsee. Berlin est égayée par plusieurs rivières, canaux, parcs et lacs (Havel, Wannsee, Müggelsee, Spree, Dahme, Landwehrkanal). Elle possède en outre une architecture ancienne et classique très riche.", 0.5, 0, "fr");
+
+        sparql.GetDataSparql(jsonFromSpotlight);
+
     }
 }
