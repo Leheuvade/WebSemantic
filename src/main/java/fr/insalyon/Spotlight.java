@@ -1,8 +1,9 @@
-package fr.insalyon;
+package main.java.fr.insalyon;
 
 import java.net.URL;
 import java.net.URLEncoder;
 
+import jdk.nashorn.internal.parser.JSONParser;
 import main.java.fr.insalyon.HttpGet;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,12 +21,11 @@ public class Spotlight
 
             String response = HttpGet.sendGET(url);
 
-            //TODO : Changer parce qu'on fait XML -> Json pour rien
-            JSONObject xmlJSONObj = XML.toJSONObject(response);
-            String jsonPrettyPrintString = xmlJSONObj.toString(4);
+            System.out.println("RESPONSE DE SPOT : " + response);
 
+            JSONObject jsonResponse = new JSONObject(response);
 
-            JSONArray listeURI = xmlJSONObj.getJSONObject("Annotation").getJSONObject("Resources").getJSONArray("Resource");
+            JSONArray listeURI = jsonResponse.getJSONArray("Resources");
 
 
             //Creation du Json final
@@ -33,7 +33,7 @@ public class Spotlight
             JSONArray arrayOfURI = new JSONArray();
 
             for (int i = 0; i < listeURI.length(); ++i) {
-                String URI = listeURI.getJSONObject(i).getString("URI");
+                String URI = listeURI.getJSONObject(i).getString("@URI");
 
                 arrayOfURI.put(URI);
             }

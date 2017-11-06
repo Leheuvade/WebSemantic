@@ -11,7 +11,7 @@ public class HttpGet
     public static String sendGET(URL obj) throws IOException {
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("GET");
-        con.setRequestProperty("Accept", "application/xml");
+        con.setRequestProperty("Accept", "application/json");
         //con.setRequestProperty("User-Agent", USER_AGENT);
         int responseCode = con.getResponseCode();
         //System.out.println("GET Response Code :: " + responseCode);

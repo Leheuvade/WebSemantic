@@ -1,5 +1,6 @@
 package main.java.fr.insalyon;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URL;
@@ -8,25 +9,32 @@ import java.net.URLEncoder;
 
 public class Sparql
 {
-    public JSONObject GetDataSparql(JSONObject jsonFromSpotlight)
+    public JSONArray GetDataSparql(JSONObject jsonFromSpotlight)
     {
         try
         {
             String request = createRequest(jsonFromSpotlight);
-            String URL = "http://model.dbpedia-spotlight.org/annotate?text=";
+
+
+            String URL = "http://fr.dbpedia.org/sparql?query=" + URLEncoder.encode(request,"UTF-8");
+
+            System.out.println(URL);
             java.net.URL url = new URL(URL);
 
+            String response = HttpGet.sendGET(url);
 
-            HttpGet.sendGET(url);
+            JSONObject jsonResponse = new JSONObject(response);
 
-            System.out.println(request);
+            JSONArray jsonReturn = jsonResponse.getJSONObject("results").getJSONArray("bindings");
+
+            System.out.println(jsonReturn.toString());
+
+            return jsonReturn;
         }
         catch(Exception e)
         {
             System.out.println(e);
         }
-
-        return null;
     }
 
     private String createRequest(JSONObject jsonFromSpotlight)
