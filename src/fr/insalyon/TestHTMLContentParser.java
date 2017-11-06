@@ -1,4 +1,4 @@
-package fr.insalyon;
+package main.java.fr.insalyon;
 
 import org.junit.jupiter.api.Test;
 

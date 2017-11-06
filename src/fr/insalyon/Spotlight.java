@@ -1,18 +1,28 @@
 package fr.insalyon;
 
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLEncoder;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import javax.net.ssl.SSLContext;
 
 public class Spotlight
 {
 
-    public JSONObject GetLinksSpotlight(String text, double confidence, int support, String language)
-    {
+    public static JSONObject GetLinksSpotlight(String text, double confidence, int support, String language) throws IOException, JSONException {
+
+        if (text.trim().length() <= 0)
+            return new JSONObject().put("URIs", new JSONArray());
+
+
         try
         {
+            JSONObject JsonSpotlightResponse = new JSONObject().put("URIs", new JSONArray());
+
             String URL = "http://model.dbpedia-spotlight.org/" + language + "/annotate?text=" + URLEncoder.encode(text,"UTF-8") + "&confidence="+confidence+"&support="+support;
             URL url = new URL(URL);
 
@@ -20,24 +30,28 @@ public class Spotlight
 
             JSONObject jsonResponse = new JSONObject(response);
 
-            JSONArray listeURI = new JSONArray();
+            if(jsonResponse.has("Resources"))
+            {
+                JSONArray listeURI = jsonResponse.getJSONArray("Resources");
 
-            if (jsonResponse.has("Resources")) {
-                listeURI = jsonResponse.getJSONArray("Resources");
+
+                //Creation du Json final
+                JSONArray arrayOfURI = new JSONArray();
+
+
+                for (int i = 0; i < listeURI.length(); ++i) {
+                    String URI = listeURI.getJSONObject(i).getString("@URI");
+
+                    //arrayOfURI.put(URI);
+
+                    JsonSpotlightResponse.getJSONArray("URIs").put(URI);
+                }
+
+                //JsonSpotlightResponse.put("URIs", arrayOfURI);
+
             }
 
-
-            //Creation du Json final
-            JSONObject JsonSpotlightResponse = new JSONObject();
-            JSONArray arrayOfURI = new JSONArray();
-
-            for (int i = 0; i < listeURI.length(); ++i) {
-                String URI = listeURI.getJSONObject(i).getString("@URI");
-
-                arrayOfURI.put(URI);
-            }
-
-            JsonSpotlightResponse.put("URIs", arrayOfURI);
+            System.out.println(JsonSpotlightResponse.toString());
 
             return JsonSpotlightResponse;
         }
@@ -45,15 +59,6 @@ public class Spotlight
         {
             e.printStackTrace();
         }
-
         return null;
-
     }
 }
-
-
-
-//XML to JSON
-            /*JSONObject xmlJSONObj = XML.toJSONObject(response);
-            String jsonPrettyPrintString = xmlJSONObj.toString(4);
-            System.out.println(jsonPrettyPrintString);*/

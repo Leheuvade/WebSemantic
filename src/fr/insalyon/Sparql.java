@@ -16,7 +16,7 @@ public class Sparql
         try
         {
             String request = createRequest(jsonFromSpotlight);
-            
+
             String URL = "http://fr.dbpedia.org/sparql?query=" + URLEncoder.encode(request,"UTF-8");
 
             java.net.URL url = new URL(URL);
