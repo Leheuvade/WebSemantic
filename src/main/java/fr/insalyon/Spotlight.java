@@ -31,7 +31,14 @@ public class Spotlight
             //Print result in Json
             //System.out.println(jsonPrettyPrintString);
 
-            JSONArray listeURI = xmlJSONObj.getJSONObject("Annotation").getJSONObject("Resources").getJSONArray("Resource");
+            JSONArray listeURI = new JSONArray();
+            if (xmlJSONObj.getJSONObject("Annotation").has("Resources")) {
+                listeURI = xmlJSONObj.getJSONObject("Annotation").getJSONObject("Resources").optJSONArray("Resource");
+                if (listeURI == null) {
+                    listeURI = new JSONArray();
+                    listeURI.put(xmlJSONObj.getJSONObject("Annotation").getJSONObject("Resources").optJSONObject("Resource"));
+                }
+            }
 
 
             //Creation du Json final
