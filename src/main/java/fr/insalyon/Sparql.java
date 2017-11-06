@@ -9,14 +9,14 @@ import java.net.URLEncoder;
 
 public class Sparql
 {
-    public JSONArray GetDataSparql(JSONObject jsonFromSpotlight)
+    public static JSONArray GetDataSparql(JSONObject jsonFromSpotlight)
     {
         JSONArray jsonReturn = new JSONArray();
 
         try
         {
             String request = createRequest(jsonFromSpotlight);
-            
+
             String URL = "http://fr.dbpedia.org/sparql?query=" + URLEncoder.encode(request,"UTF-8");
 
             java.net.URL url = new URL(URL);
@@ -37,7 +37,7 @@ public class Sparql
         return jsonReturn;
     }
 
-    private String createRequest(JSONObject jsonFromSpotlight)
+    private static String createRequest(JSONObject jsonFromSpotlight)
     {
         String request =
                 "select * WHERE\n" +
