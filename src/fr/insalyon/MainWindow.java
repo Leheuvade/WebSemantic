@@ -44,6 +44,7 @@ public class MainWindow extends JFrame implements ActionListener {
         pane.add(searchBar, BorderLayout.PAGE_START);
 
         m_resultArea = new JTextArea();
+        m_resultArea.setLineWrap(true);
 
         pane.add(m_resultArea, BorderLayout.CENTER);
 
@@ -55,6 +56,7 @@ public class MainWindow extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == m_searchButton || e.getSource() == m_searchText) {
             JSONArray resultats = recupererResultats(m_searchText.getText());
+
 
             m_resultArea.setText(resultats.toString());
         }
@@ -90,15 +92,17 @@ public class MainWindow extends JFrame implements ActionListener {
                         continue;
                     }
 
-                    JSONObject json = s.GetLinksSpotlight(p, 0.8, 0, "fr");
+                    JSONArray json = Sparql.GetDataSparql(s.GetLinksSpotlight(p, 0.8, 0, "fr"));
 
-                    extendArray(URIs, json.getJSONArray("URIs"));
+                    extendArray(URIs, json);
                 }
 
                 tableOfURIs.put(URIs);
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            break;
         }
 
         return tableOfURIs;

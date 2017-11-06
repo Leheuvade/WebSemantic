@@ -9,7 +9,7 @@ import java.net.URLEncoder;
 
 public class Sparql
 {
-    public JSONArray GetDataSparql(JSONObject jsonFromSpotlight)
+    public static JSONArray GetDataSparql(JSONObject jsonFromSpotlight)
     {
         JSONArray jsonReturn = new JSONArray();
 
@@ -37,7 +37,7 @@ public class Sparql
         return jsonReturn;
     }
 
-    private String createRequest(JSONObject jsonFromSpotlight)
+    private static String createRequest(JSONObject jsonFromSpotlight)
     {
         String request =
                 "select * WHERE\n" +
