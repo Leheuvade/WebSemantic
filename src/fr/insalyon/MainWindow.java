@@ -1,5 +1,6 @@
 package fr.insalyon;
 
+import jdk.nashorn.internal.parser.JSONParser;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,6 +11,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+
+import static fr.insalyon.CountryRecap.GetCountryRecap;
 
 public class MainWindow extends JFrame implements ActionListener {
     JTextField m_searchText;
@@ -58,7 +61,13 @@ public class MainWindow extends JFrame implements ActionListener {
             JSONArray resultats = recupererResultats(m_searchText.getText());
 
 
-            System.out.println(resultats.toString());
+            try {
+                System.out.println(resultats.toString(4));
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            }
+
+            GetCountryRecap(m_searchText.getText(), resultats);
         }
     }
 
