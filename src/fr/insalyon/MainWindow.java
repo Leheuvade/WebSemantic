@@ -58,7 +58,7 @@ public class MainWindow extends JFrame implements ActionListener {
             JSONArray resultats = recupererResultats(m_searchText.getText());
 
 
-            m_resultArea.setText(resultats.toString());
+            System.out.println(resultats.toString());
         }
     }
 
@@ -69,42 +69,5 @@ public class MainWindow extends JFrame implements ActionListener {
         }
     }
 
-    public JSONArray recupererResultats(String requete) {
-        java.util.List<String> liens = null;
-        try {
-            liens = HTMLContentParser.getListURLForDuckDuckGo(HTTPQueryHandler.queryDuckDuckGo(requete));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
 
-        Spotlight s = new Spotlight();
-
-        JSONArray tableOfURIs = new JSONArray();
-
-        for (String lien : liens) {
-            try {
-                List<String> paragraphs = HTMLContentParser.getParagraphsForDocument(HTTPQueryHandler.getHTML(lien));
-
-                JSONArray URIs = new JSONArray();
-                for (String p : paragraphs) {
-                    if (p.isEmpty()) {
-                        continue;
-                    }
-
-                    JSONArray json = Sparql.GetDataSparql(s.GetLinksSpotlight(p, 0.8, 0, "fr"));
-
-                    extendArray(URIs, json);
-                }
-
-                tableOfURIs.put(URIs);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            break;
-        }
-
-        return tableOfURIs;
-    }
 }
