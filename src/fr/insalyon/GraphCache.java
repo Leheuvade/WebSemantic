@@ -41,14 +41,18 @@ public class GraphCache {
     public static JSONArray recupererGraph(String URL) {
         String fileName = getFileNameForURL(URL);
 
-        JSONArray graph = null;
+        if (!Files.exists(Paths.get(fileName))) {
+            return null;
+        }
+
+        JSONArray graph;
         try {
-            String fileString = new String(Files.readAllBytes(Paths.get("manifest.mf")), StandardCharsets.UTF_8);
+            String fileString = new String(Files.readAllBytes(Paths.get(fileName)), StandardCharsets.UTF_8);
             graph = new JSONArray(fileString);
         } catch (IOException e) {
-            e.printStackTrace();
+            return null;
         } catch (JSONException e) {
-            e.printStackTrace();
+            return null;
         }
 
         return graph;
@@ -60,55 +64,12 @@ public class GraphCache {
         try {
             FileWriter file = new FileWriter(fileName);
             file.write(graph.toString());
+            file.flush();
+            file.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static JSONArray recupererGraphRemote(String requete) {
-        List<String> liens = null;
-        try {
-            liens = HTMLContentParser.getListURLForDuckDuckGo(HTTPQueryHandler.queryDuckDuckGo(requete));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
 
-        Spotlight s = new Spotlight();
-
-        JSONArray graphs = new JSONArray();
-
-        for (String lien : liens) {
-            try {
-                JSONArray cache = recupererGraph(lien);
-                if (cache != null) {
-                    graphs.put(cache);
-                    break;
-                }
-
-                List<String> paragraphs = HTMLContentParser.getParagraphsForDocument(HTTPQueryHandler.getHTML(lien));
-
-                StringBuilder para = new StringBuilder();
-
-                for (String p : paragraphs) {
-                    if (p.isEmpty()) {
-                        continue;
-                    }
-
-                    para.append(p);
-                    para.append("\n");
-                }
-
-                JSONArray json = Sparql.GetDataSparql(s.GetLinksSpotlight(para.toString(), 0.8, 0, "fr"));
-
-                graphs.put(json);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            break;
-        }
-
-        return tableOfURIs;
-    }
 }

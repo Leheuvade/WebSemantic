@@ -9,12 +9,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLEncoder;
 
 public class HTTPQueryHandler {
     public static final String duckDuckGoQueryURL = "https://duckduckgo.com/html/?q=<query>&ia=web";
 
     public static Document queryDuckDuckGo(String query) throws Exception {
-        return getHTML(duckDuckGoQueryURL.replace("<query>", query));
+        return getHTML(duckDuckGoQueryURL.replace("<query>", URLEncoder.encode(query,"UTF-8")));
     }
 
     public static Document getHTML(String urlToRead) throws Exception {

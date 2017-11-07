@@ -62,11 +62,53 @@ public class MainWindow extends JFrame implements ActionListener {
         }
     }
 
-    private void extendArray(JSONArray dest, JSONArray src)
-            throws JSONException {
-        for (int i = 0; i < src.length(); i++) {
-            dest.put(src.get(i));
+    private static JSONArray recupererResultats(String requete) {
+        List<String> liens;
+        try {
+            liens = HTMLContentParser.getListURLForDuckDuckGo(HTTPQueryHandler.queryDuckDuckGo(requete));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
+
+        Spotlight s = new Spotlight();
+
+        JSONArray graphs = new JSONArray();
+
+        for (String lien : liens) {
+            try {
+                JSONArray cache = GraphCache.recupererGraph(lien);
+                if (cache != null) {
+                    graphs.put(cache);
+                    break;
+                }
+
+                List<String> paragraphs = HTMLContentParser.getParagraphsForDocument(HTTPQueryHandler.getHTML(lien));
+
+                StringBuilder para = new StringBuilder();
+
+                for (String p : paragraphs) {
+                    if (p.isEmpty()) {
+                        continue;
+                    }
+
+                    para.append(p);
+                    para.append("\n");
+                }
+
+                JSONArray json = Sparql.GetDataSparql(s.GetLinksSpotlight(para.toString(), 0.8, 0, "fr"));
+
+                GraphCache.sauvergarderGraph(lien, json);
+
+                graphs.put(json);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            break;
+        }
+
+        return graphs;
     }
 
 
