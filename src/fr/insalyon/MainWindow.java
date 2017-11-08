@@ -80,24 +80,38 @@ public class MainWindow extends JFrame implements ActionListener {
 
             JSONObject recapCountry = GetCountryRecapFromSparql(m_searchText.getText(), json);
 
-            //m_resultArea.setText(recapCountry.toString(4));
+            String Pays = "";
+            String Capitale = "";
+            String Population = "";
+            String Superficie = "";
+            String urlThumbnailFlag = "";
 
                 if(recapCountry.has("Pays"))
                 {
-                    m_resultArea.append("\nPays Recherche : " + recapCountry.getString("Pays") + "\n\n");
+                    Pays = recapCountry.getString("Pays");
                 }
-                if(recapCountry.has("Pays"))
+                if(recapCountry.has("Capitale"))
                 {
-                    m_resultArea.append("Capitale : " + recapCountry.getString("Capitale") + "\n");
+                    Capitale = recapCountry.getString("Capitale");
                 }
-                if(recapCountry.has("Pays"))
+                if(recapCountry.has("Population"))
                 {
-                    m_resultArea.append("Superficie : " + recapCountry.getString("Superficie") + " km2\n");
+                    Population = recapCountry.getString("Population");
                 }
-                if(recapCountry.has("Pays"))
+                if(recapCountry.has("Superficie"))
                 {
-                    m_resultArea.append("Population : " + recapCountry.getString("Population") + " habitants\n");
+                    Superficie = recapCountry.getString("Superficie");
                 }
+                if(recapCountry.has("urlThumbnailFlag"))
+                {
+                    urlThumbnailFlag = recapCountry.getString("urlThumbnailFlag");
+                }
+
+            m_resultArea.setText("<html><h3><strong>Pays recherche : " + Pays + "</strong>" +
+                    " <img src=\" "+ urlThumbnailFlag + "\" alt=\"\" /></h3>" +
+                    "<p>- Capitale : "+ Capitale+"</p>" +
+                    "<p>- Superficie : "+ Superficie+"</p>" +
+                    "<p>- Population : "+ Population+"</p></html>");
 
             } catch (Exception e1) {
                 e1.printStackTrace();
