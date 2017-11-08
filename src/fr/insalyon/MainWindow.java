@@ -7,10 +7,12 @@ import org.json.JSONObject;
 import org.jsoup.nodes.Document;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.List;
 
 import static fr.insalyon.CountryRecap.GetCountryRecapFromSparql;
@@ -22,6 +24,11 @@ public class MainWindow extends JFrame implements ActionListener {
     JButton m_countryButton;
 
     JTextArea m_resultArea;
+    JTextArea m_similarityArea;
+
+    JTextField m_url1Similarity;
+    JTextField m_url2Similarity;
+    JButton m_compareButton;
 
     final static String LANGUAGE = "fr";
     final static String LOCALE = "fr";
@@ -33,6 +40,10 @@ public class MainWindow extends JFrame implements ActionListener {
         setTitle("TrucDeRecherche");
 
         Container pane = getContentPane();
+        pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
+
+        JPanel searchPart = new JPanel();
+        searchPart.setLayout(new BorderLayout());
 
         JPanel searchBar = new JPanel();
         searchBar.setLayout(new BoxLayout(searchBar, BoxLayout.X_AXIS));
@@ -54,12 +65,42 @@ public class MainWindow extends JFrame implements ActionListener {
         m_countryButton.addActionListener(this);
         searchBar.add(m_countryButton);
 
-        pane.add(searchBar, BorderLayout.PAGE_START);
+        searchPart.add(searchBar, BorderLayout.PAGE_START);
 
         m_resultArea = new JTextArea();
         m_resultArea.setLineWrap(true);
 
-        pane.add(m_resultArea, BorderLayout.CENTER);
+        searchPart.add(m_resultArea, BorderLayout.CENTER);
+
+        pane.add(searchPart);
+
+
+        JPanel similarityPart = new JPanel();
+        similarityPart.setLayout(new BorderLayout());
+
+        JPanel similarityBar = new JPanel();
+        similarityBar.setLayout(new BoxLayout(similarityBar, BoxLayout.X_AXIS));
+
+        m_url1Similarity = new JTextField();
+        m_url1Similarity.addActionListener(this);
+        similarityBar.add(m_url1Similarity);
+
+        m_url2Similarity = new JTextField();
+        m_url2Similarity.addActionListener(this);
+        similarityBar.add(m_url2Similarity);
+
+        m_compareButton = new JButton("Comparer");
+        m_compareButton.addActionListener(this);
+        similarityBar.add(m_compareButton);
+
+        similarityPart.add(similarityBar, BorderLayout.PAGE_START);
+
+        m_similarityArea = new JTextArea();
+        m_similarityArea.setLineWrap(true);
+
+        similarityPart.add(m_similarityArea, BorderLayout.CENTER);
+
+        pane.add(similarityPart);
 
         pack();
         setSize(1200,700);
@@ -81,12 +122,6 @@ public class MainWindow extends JFrame implements ActionListener {
             Pertinence similarities = new Pertinence();
 
             m_resultArea.setText(similarities.pertinence(mergedArray).toString());
-
-            try {
-                //System.out.println(resultats.toString(4));
-            } catch (JSONException e1) {
-                e1.printStackTrace();
-            }
         }
         if (e.getSource() == m_countryButton) {
 
@@ -123,6 +158,10 @@ public class MainWindow extends JFrame implements ActionListener {
                 {
                     urlThumbnailFlag = recapCountry.getString("urlThumbnailFlag");
                 }
+                if(recapCountry.has("dirigeants"))
+                {
+                    m_resultArea.append("Dirigeants : " + recapCountry.getString("dirigeants") + "\n");
+                }
 
             m_resultArea.setText("<html><h3><strong>Pays recherche : " + Pays + "</strong>" +
                     " <img src=\" "+ urlThumbnailFlag + "\" alt=\"\" /></h3>" +
@@ -133,6 +172,80 @@ public class MainWindow extends JFrame implements ActionListener {
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
+        }
+
+        if (e.getSource() == m_compareButton || e.getSource() == m_url1Similarity || e.getSource() == m_url2Similarity) {
+            Similarity sim = new Similarity();
+            Spotlight s = new Spotlight();
+
+            JSONArray cache = GraphCache.recupererGraph(m_url1Similarity.getText());
+            if (cache == null) {
+                Document doc = null;
+                try {
+                    doc = HTTPQueryHandler.getHTML(m_url1Similarity.getText());
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+
+                if (doc != null) {
+                    List<String> paragraphs = HTMLContentParser.getParagraphsForDocument(doc);
+
+                    StringBuilder para = new StringBuilder();
+
+                    for (String p : paragraphs) {
+                        if (p.isEmpty()) {
+                            continue;
+                        }
+
+                        para.append(p);
+                        para.append("\n");
+                    }
+
+                    try {
+                        cache = Sparql.GetDataSparql(s.GetLinksSpotlight(para.toString(), 0.8, 0, LANGUAGE), LANGUAGE);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+
+                    GraphCache.sauvergarderGraph(m_url1Similarity.getText(), cache);
+                }
+            }
+
+
+            JSONArray cache2 = GraphCache.recupererGraph(m_url2Similarity.getText());
+            if (cache2 == null) {
+                Document doc = null;
+                try {
+                    doc = HTTPQueryHandler.getHTML(m_url2Similarity.getText());
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+
+                if (doc != null) {
+                    List<String> paragraphs = HTMLContentParser.getParagraphsForDocument(doc);
+
+                    StringBuilder para = new StringBuilder();
+
+                    for (String p : paragraphs) {
+                        if (p.isEmpty()) {
+                            continue;
+                        }
+
+                        para.append(p);
+                        para.append("\n");
+                    }
+
+                    try {
+                        cache2 = Sparql.GetDataSparql(s.GetLinksSpotlight(para.toString(), 0.8, 0, LANGUAGE), LANGUAGE);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+
+                    GraphCache.sauvergarderGraph(m_url2Similarity.getText(), cache2);
+                }
+            }
+
+            m_similarityArea.setText("Degré de similarité : " + String.valueOf(sim.similarity(cache, cache2)) + "%");
         }
     }
 
