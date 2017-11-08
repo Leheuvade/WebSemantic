@@ -101,6 +101,8 @@ public class MainWindow extends JFrame implements ActionListener {
             String Superficie = "";
             String urlThumbnailFlag = "";
 
+                System.out.println(recapCountry.toString(4));
+
                 if(recapCountry.has("Pays"))
                 {
                     Pays = recapCountry.getString("Pays");
