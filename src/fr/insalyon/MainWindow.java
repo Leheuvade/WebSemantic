@@ -60,9 +60,20 @@ public class MainWindow extends JFrame implements ActionListener {
         if (e.getSource() == m_searchButton || e.getSource() == m_searchText) {
             JSONArray resultats = recupererResultats(m_searchText.getText());
 
+            JSONArray mergedArray = new JSONArray();
+
+            for (Object res : resultats) {
+                for (Object spo : (JSONArray)res) {
+                    mergedArray.put(spo);
+                }
+            }
+
+            Pertinence similarities = new Pertinence();
+
+            m_resultArea.setText(similarities.pertinence(mergedArray).toString());
 
             try {
-                System.out.println(resultats.toString(4));
+                //System.out.println(resultats.toString(4));
             } catch (JSONException e1) {
                 e1.printStackTrace();
             }
@@ -84,6 +95,7 @@ public class MainWindow extends JFrame implements ActionListener {
 
         JSONArray graphs = new JSONArray();
 
+        int i = 0;
         for (String lien : liens) {
             try {
                 JSONArray cache = GraphCache.recupererGraph(lien);
@@ -113,8 +125,11 @@ public class MainWindow extends JFrame implements ActionListener {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            i++;
 
-            break;
+            if (i >= 10) {
+                break;
+            }
         }
 
         return graphs;

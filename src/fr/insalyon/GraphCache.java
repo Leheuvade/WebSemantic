@@ -49,6 +49,10 @@ public class GraphCache {
         try {
             String fileString = new String(Files.readAllBytes(Paths.get(fileName)), StandardCharsets.UTF_8);
             graph = new JSONArray(fileString);
+
+            if (graph.length() == 0) {
+                return null;
+            }
         } catch (IOException e) {
             return null;
         } catch (JSONException e) {
