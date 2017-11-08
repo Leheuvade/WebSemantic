@@ -150,7 +150,7 @@ public class MainWindow extends JFrame implements ActionListener {
                 }
                 if(recapCountry.has("dirigeants"))
                 {
-                    m_resultArea.append("Dirigeants : " + recapCountry.getString("dirigeants") + "\n");
+                    m_resultArea.append("Dirigeants : " + recapCountry.getJSONArray("dirigeants").toString() + "\n");
                 }
 
             } catch (Exception e1) {

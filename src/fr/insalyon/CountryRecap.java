@@ -64,12 +64,11 @@ public class CountryRecap
                     jsReturn.put("Capitale", capitale);
                 if (urlThumbnailFlag != null)
                     jsReturn.put("urlThumbnailFlag", urlThumbnailFlag);
-                jsReturn.put("population", population);
                 if (dirigeants.size() > 0)
                     jsReturn.put("dirigeants", dirigeants);
-
-                return jsReturn;
             }
+
+            return jsReturn;
         }
         catch (Exception e)
         {
