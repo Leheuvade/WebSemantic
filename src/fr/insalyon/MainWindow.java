@@ -84,7 +84,14 @@ public class MainWindow extends JFrame implements ActionListener {
 
         JSONArray graphs = new JSONArray();
 
+        int compteur = 0;
+
         for (String lien : liens) {
+            compteur++;
+            if(compteur >= 10)
+            {
+                break;
+            }
             try {
                 JSONArray cache = GraphCache.recupererGraph(lien);
                 if (cache != null) {
@@ -114,7 +121,7 @@ public class MainWindow extends JFrame implements ActionListener {
                 e.printStackTrace();
             }
 
-            break;
+            //break;
         }
 
         return graphs;
