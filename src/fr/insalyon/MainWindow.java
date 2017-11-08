@@ -12,11 +12,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-import static fr.insalyon.CountryRecap.GetCountryRecap;
+import static fr.insalyon.CountryRecap.GetCountryRecapFromSparql;
+import static fr.insalyon.Spotlight.GetLinksSpotlight;
 
 public class MainWindow extends JFrame implements ActionListener {
     JTextField m_searchText;
     JButton m_searchButton;
+    JButton m_countryButton;
 
     JTextArea m_resultArea;
 
@@ -44,6 +46,10 @@ public class MainWindow extends JFrame implements ActionListener {
         m_searchButton.addActionListener(this);
         searchBar.add(m_searchButton);
 
+        m_countryButton = new JButton("Rechercher Pays");
+        m_countryButton.addActionListener(this);
+        searchBar.add(m_countryButton);
+
         pane.add(searchBar, BorderLayout.PAGE_START);
 
         m_resultArea = new JTextArea();
@@ -66,8 +72,19 @@ public class MainWindow extends JFrame implements ActionListener {
             } catch (JSONException e1) {
                 e1.printStackTrace();
             }
+        }
+        if (e.getSource() == m_countryButton) {
 
-            GetCountryRecap(m_searchText.getText(), resultats);
+            try {
+            JSONArray json = Sparql.GetDataSparql(GetLinksSpotlight(m_searchText.getText(), 0.1, 0, "fr"));
+
+            JSONObject recapCountry = GetCountryRecapFromSparql(m_searchText.getText(), json);
+
+            m_resultArea.setText(recapCountry.toString(4));
+
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
         }
     }
 
@@ -112,7 +129,7 @@ public class MainWindow extends JFrame implements ActionListener {
                     para.append("\n");
                 }
 
-                JSONArray json = Sparql.GetDataSparql(s.GetLinksSpotlight(para.toString(), 0.8, 0, "fr"));
+                JSONArray json = Sparql.GetDataSparql(GetLinksSpotlight(para.toString(), 0.8, 0, "fr"));
 
                 GraphCache.sauvergarderGraph(lien, json);
 
