@@ -10,13 +10,17 @@ import org.json.JSONObject;
 
 import javax.net.ssl.SSLContext;
 
+
 public class Spotlight
 {
+    final static int textMaxLength = 5000;
 
     public static JSONObject GetLinksSpotlight(String text, double confidence, int support, String language) throws IOException, JSONException {
 
         if (text.trim().length() <= 0)
             return new JSONObject().put("URIs", new JSONArray());
+
+        text = text.substring(0, Math.min(text.length(), textMaxLength));
 
 
         try

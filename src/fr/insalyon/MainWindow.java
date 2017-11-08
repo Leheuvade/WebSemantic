@@ -4,6 +4,7 @@ import jdk.nashorn.internal.parser.JSONParser;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.nodes.Document;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
@@ -95,8 +96,14 @@ public class MainWindow extends JFrame implements ActionListener {
 
         JSONArray graphs = new JSONArray();
 
-        int i = 0;
+        int compteur = 0;
+
         for (String lien : liens) {
+            compteur++;
+            if(compteur >= 10)
+            {
+                break;
+            }
             try {
                 JSONArray cache = GraphCache.recupererGraph(lien);
                 if (cache != null) {
@@ -104,7 +111,13 @@ public class MainWindow extends JFrame implements ActionListener {
                     break;
                 }
 
-                List<String> paragraphs = HTMLContentParser.getParagraphsForDocument(HTTPQueryHandler.getHTML(lien));
+                Document doc = HTTPQueryHandler.getHTML(lien);
+
+                if (doc == null) {
+                    continue;
+                }
+
+                List<String> paragraphs = HTMLContentParser.getParagraphsForDocument(doc);
 
                 StringBuilder para = new StringBuilder();
 
@@ -117,7 +130,7 @@ public class MainWindow extends JFrame implements ActionListener {
                     para.append("\n");
                 }
 
-                JSONArray json = Sparql.GetDataSparql(s.GetLinksSpotlight(para.toString(), 0.8, 0, "fr"));
+                JSONArray json = Sparql.GetDataSparql(s.GetLinksSpotlight(para.toString(), 0.8, 0, "en"), "en");
 
                 GraphCache.sauvergarderGraph(lien, json);
 
@@ -125,11 +138,7 @@ public class MainWindow extends JFrame implements ActionListener {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            i++;
 
-            if (i >= 10) {
-                break;
-            }
         }
 
         return graphs;

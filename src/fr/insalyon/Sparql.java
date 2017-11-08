@@ -9,7 +9,7 @@ import java.net.URLEncoder;
 
 public class Sparql
 {
-    public static JSONArray GetDataSparql(JSONObject jsonFromSpotlight)
+    public static JSONArray GetDataSparql(JSONObject jsonFromSpotlight, String language)
     {
         JSONArray jsonReturn = new JSONArray();
 
@@ -17,7 +17,7 @@ public class Sparql
         {
             String request = createRequest(jsonFromSpotlight);
 
-            String URL = "http://fr.dbpedia.org/sparql?query=" + URLEncoder.encode(request,"UTF-8");
+            String URL = "http://dbpedia.org/sparql?query=" + URLEncoder.encode(request,"UTF-8");
 
             java.net.URL url = new URL(URL);
 

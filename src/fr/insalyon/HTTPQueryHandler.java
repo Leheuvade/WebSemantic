@@ -21,6 +21,7 @@ public class HTTPQueryHandler {
                        .get();
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
 
         return doc;
