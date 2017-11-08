@@ -13,6 +13,9 @@ public class CountryRecap
 
             String superficie = null;
             String population = null;
+            String capitale = null;
+            String urlThumbnailFlag = null;
+
 
             String dbpediaCountryURI = "http://fr.dbpedia.org/resource/" + nomDuPaysDeLaRequete.toLowerCase();
 
@@ -31,6 +34,18 @@ public class CountryRecap
                 {
                     population = item.getJSONObject("o").getString("value");
                 }
+
+                if(item.getJSONObject("s").getString("value").toLowerCase().equals(dbpediaCountryURI)
+                        && item.getJSONObject("p").getString("value").equals("http://dbpedia.org/ontology/capital"))
+                {
+                    capitale = item.getJSONObject("o").getString("value");
+                    capitale = capitale.replace("http://fr.dbpedia.org/resource/","");
+                }
+                if(item.getJSONObject("s").getString("value").toLowerCase().equals(dbpediaCountryURI)
+                        && item.getJSONObject("p").getString("value").equals("http://dbpedia.org/ontology/thumbnail"))
+                {
+                    urlThumbnailFlag = item.getJSONObject("o").getString("value");
+                }
             }
 
             jsReturn.put("Pays", nomDuPaysDeLaRequete);
@@ -38,7 +53,11 @@ public class CountryRecap
             if(superficie != null)
                 jsReturn.put("Superficie",superficie);
             if(population != null)
-                jsReturn.put("population",population);
+                jsReturn.put("Population",population);
+            if(capitale != null)
+                jsReturn.put("Capitale",capitale);
+            if(urlThumbnailFlag != null)
+                jsReturn.put("urlThumbnailFlag",urlThumbnailFlag);
 
             return jsReturn;
         }

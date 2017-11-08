@@ -80,7 +80,24 @@ public class MainWindow extends JFrame implements ActionListener {
 
             JSONObject recapCountry = GetCountryRecapFromSparql(m_searchText.getText(), json);
 
-            m_resultArea.setText(recapCountry.toString(4));
+            //m_resultArea.setText(recapCountry.toString(4));
+
+                if(recapCountry.has("Pays"))
+                {
+                    m_resultArea.append("\nPays Recherche : " + recapCountry.getString("Pays") + "\n\n");
+                }
+                if(recapCountry.has("Pays"))
+                {
+                    m_resultArea.append("Capitale : " + recapCountry.getString("Capitale") + "\n");
+                }
+                if(recapCountry.has("Pays"))
+                {
+                    m_resultArea.append("Superficie : " + recapCountry.getString("Superficie") + " km2\n");
+                }
+                if(recapCountry.has("Pays"))
+                {
+                    m_resultArea.append("Population : " + recapCountry.getString("Population") + " habitants\n");
+                }
 
             } catch (Exception e1) {
                 e1.printStackTrace();
