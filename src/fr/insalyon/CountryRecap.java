@@ -3,6 +3,9 @@ package fr.insalyon;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class CountryRecap
 {
     public static JSONObject GetCountryRecapFromSparql(String nomDuPaysDeLaRequete, JSONArray spo)
@@ -15,6 +18,7 @@ public class CountryRecap
             String population = null;
 
             String dbpediaCountryURI = "http://fr.dbpedia.org/resource/" + nomDuPaysDeLaRequete.toLowerCase();
+            ArrayList <String> dirigeants = new ArrayList<String>();
 
             for (int i =0;i< spo.length(); i++)
             {
@@ -31,6 +35,16 @@ public class CountryRecap
                 {
                     population = item.getJSONObject("o").getString("value");
                 }
+
+                if(item.getJSONObject("s").getString("value").toLowerCase().equals(dbpediaCountryURI)
+                    && item.getJSONObject("p").getString("value").equals("http://fr.dbpedia.org/property/nomDirigeant"))
+                {
+                    String dirigeant = item.getJSONObject("o").getString("value").replace( "http://fr.dbpedia.org/resource/", "");
+                    if (!Arrays.asList(dirigeants).contains(dirigeant))
+                    {
+                        dirigeants.add(dirigeant);
+                    }
+                }
             }
 
             jsReturn.put("Pays", nomDuPaysDeLaRequete);
@@ -39,6 +53,8 @@ public class CountryRecap
                 jsReturn.put("Superficie",superficie);
             if(population != null)
                 jsReturn.put("population",population);
+            if(dirigeants.size() > 0)
+                jsReturn.put("dirigeants", dirigeants);
 
             return jsReturn;
         }
