@@ -1,10 +1,7 @@
 package main.java.fr.insalyon;
 
-import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.Test;
 
 public class TestHTMLContentParser {
     @Test

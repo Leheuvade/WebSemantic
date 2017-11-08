@@ -4,6 +4,7 @@ import jdk.nashorn.internal.parser.JSONParser;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.nodes.Document;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
@@ -21,6 +22,9 @@ public class MainWindow extends JFrame implements ActionListener {
     JButton m_countryButton;
 
     JTextArea m_resultArea;
+
+    final static String LANGUAGE = "fr";
+    final static String LOCALE = "fr";
 
     //public final Dimension DIM_SEARCHBAR = new Dimension (300, 400);
 
@@ -66,9 +70,20 @@ public class MainWindow extends JFrame implements ActionListener {
         if (e.getSource() == m_searchButton || e.getSource() == m_searchText) {
             JSONArray resultats = recupererResultats(m_searchText.getText());
 
+            JSONArray mergedArray = new JSONArray();
+
+            for (Object res : resultats) {
+                for (Object spo : (JSONArray)res) {
+                    mergedArray.put(spo);
+                }
+            }
+
+            Pertinence similarities = new Pertinence();
+
+            m_resultArea.setText(similarities.pertinence(mergedArray).toString());
 
             try {
-                System.out.println(resultats.toString(4));
+                //System.out.println(resultats.toString(4));
             } catch (JSONException e1) {
                 e1.printStackTrace();
             }
@@ -76,7 +91,7 @@ public class MainWindow extends JFrame implements ActionListener {
         if (e.getSource() == m_countryButton) {
 
             try {
-            JSONArray json = Sparql.GetDataSparql(GetLinksSpotlight(m_searchText.getText(), 0.1, 0, "fr"));
+            JSONArray json = Sparql.GetDataSparql(GetLinksSpotlight(m_searchText.getText(), 0.1, 0, LANGUAGE), LANGUAGE);
 
             JSONObject recapCountry = GetCountryRecapFromSparql(m_searchText.getText(), json);
 
@@ -122,7 +137,7 @@ public class MainWindow extends JFrame implements ActionListener {
     private static JSONArray recupererResultats(String requete) {
         List<String> liens;
         try {
-            liens = HTMLContentParser.getListURLForDuckDuckGo(HTTPQueryHandler.queryDuckDuckGo(requete));
+            liens = HTMLContentParser.getListURLForDuckDuckGo(HTTPQueryHandler.queryDuckDuckGo(requete, LANGUAGE, LOCALE));
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -147,7 +162,13 @@ public class MainWindow extends JFrame implements ActionListener {
                     break;
                 }
 
-                List<String> paragraphs = HTMLContentParser.getParagraphsForDocument(HTTPQueryHandler.getHTML(lien));
+                Document doc = HTTPQueryHandler.getHTML(lien);
+
+                if (doc == null) {
+                    continue;
+                }
+
+                List<String> paragraphs = HTMLContentParser.getParagraphsForDocument(doc);
 
                 StringBuilder para = new StringBuilder();
 
@@ -160,7 +181,7 @@ public class MainWindow extends JFrame implements ActionListener {
                     para.append("\n");
                 }
 
-                JSONArray json = Sparql.GetDataSparql(GetLinksSpotlight(para.toString(), 0.8, 0, "fr"));
+                JSONArray json = Sparql.GetDataSparql(s.GetLinksSpotlight(para.toString(), 0.8, 0, LANGUAGE), LANGUAGE);
 
                 GraphCache.sauvergarderGraph(lien, json);
 
@@ -169,7 +190,6 @@ public class MainWindow extends JFrame implements ActionListener {
                 e.printStackTrace();
             }
 
-            //break;
         }
 
         return graphs;

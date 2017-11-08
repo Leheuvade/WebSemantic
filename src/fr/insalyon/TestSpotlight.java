@@ -2,10 +2,10 @@ package fr.insalyon;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import static fr.insalyon.Spotlight.GetLinksSpotlight;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 public class TestSpotlight
 {

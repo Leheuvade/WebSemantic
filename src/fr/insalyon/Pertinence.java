@@ -1,68 +1,40 @@
 package fr.insalyon;
 
-import javafx.util.Pair;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
 
 public class Pertinence {
-    public List<String> pertinence(String pathFile) {
-        JSONParser parser = new JSONParser();
-
-        Object objet = null;
-        try {
-            objet = parser.parse(new FileReader(pathFile));
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-        }
-        JSONArray jsonObject = (JSONArray) objet;
-        List<JSONObject> motsCles= new ArrayList <JSONObject>();
-        List<Pair<String,Integer>> motCleOccurrence= new ArrayList<>();
+    public List<String> pertinence(JSONArray graph) {
+        HashMap<String,Integer> motCleOccurrence= new HashMap<>();
 
         int occurence;
 
-        for (int i = 0; i < jsonObject.size(); i++) {
-            JSONObject lien = (JSONObject) jsonObject.get(i);
+        for (int i = 0; i < graph.length(); i++) {
+            JSONObject lien = (JSONObject) graph.get(i);
             JSONObject champS = (JSONObject) lien.get("s");
-            motsCles.add(champS);
+
+            String[] motArray = ((String)champS.get("value")).split("/");
+            String mot = motArray[motArray.length - 1];
+
+            motCleOccurrence.put(mot, motCleOccurrence.getOrDefault(mot, 0) + 1);
         }
 
-        for(int j=0;j<motsCles.size();j++)
-        {
+        Comparator<Map.Entry<String, Integer>> valueComparator = (e1, e2) -> {
+            Integer v1 = e1.getValue();
+            Integer v2 = e2.getValue();
+            return v2.compareTo(v1);
+        };
 
-            occurence=Collections.frequency(motsCles,motsCles.get(j));
-            String[] tab=motsCles.get(j).toString().split("/");
-            if(!motCleOccurrence.contains(new Pair<>(tab[tab.length-1].split("\"")[0], occurence)))
-            {
-                motCleOccurrence.add(new Pair<>(tab[tab.length-1].split("\"")[0],occurence));
-            }
+        Set<Map.Entry<String, Integer>> entries = motCleOccurrence.entrySet();
+        List<Map.Entry<String, Integer>> listOfEntries = new ArrayList<>(entries);
+        Collections.sort(listOfEntries, valueComparator);
 
-
-
-        }
-        motCleOccurrence.sort(new Comparator<Pair<String, Integer>>() {
-            @Override
-            public int compare(Pair<String, Integer> o1, Pair<String, Integer> o2) {
-                if (o1.getValue() > o2.getValue()) {
-                    return -1;
-                }else if (o1.getValue().equals(o2.getValue())) {
-                    return 0; // You can change this to make it then look at the
-                    //words alphabetical order
-                } else {
-                    return 1;
-                }
-            }
-        });
         List<String> motsClesTries= new ArrayList<>();
-        for(int j=0;j<motCleOccurrence.size();j++)
+        for(int j=0;j<listOfEntries.size() && j <= 20;j++)
         {
-            motsClesTries.add(motCleOccurrence.get(j).getKey());
+            motsClesTries.add(listOfEntries.get(j).getKey().replace('_', ' '));
         }
         return motsClesTries;
     }
