@@ -54,7 +54,7 @@ public class Spotlight
                 //JsonSpotlightResponse.put("URIs", arrayOfURI);
 
             }
-            
+
             return JsonSpotlightResponse;
         }
         catch (Exception e)
