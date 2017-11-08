@@ -17,7 +17,12 @@ public class Sparql
         {
             String request = createRequest(jsonFromSpotlight);
 
-            String URL = "http://dbpedia.org/sparql?query=" + URLEncoder.encode(request,"UTF-8");
+            String URL;
+            if (language == "en") {
+                URL = "http://dbpedia.org/sparql?query=" + URLEncoder.encode(request, "UTF-8");
+            } else {
+                URL = "http://" + language + ".dbpedia.org/sparql?query=" + URLEncoder.encode(request, "UTF-8");
+            }
 
             java.net.URL url = new URL(URL);
 
@@ -67,5 +72,7 @@ public class Sparql
                 "}";
 
         return request;
+
+
     }
 }

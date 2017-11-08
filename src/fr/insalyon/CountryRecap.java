@@ -5,7 +5,7 @@ import org.json.JSONObject;
 
 public class CountryRecap
 {
-    public static JSONObject GetCountryRecap(String nomDuPaysDeLaRequete, JSONArray spo)
+    public static JSONObject GetCountryRecapFromSparql(String nomDuPaysDeLaRequete, JSONArray spo)
     {
         try
         {
@@ -16,9 +16,9 @@ public class CountryRecap
 
             String dbpediaCountryURI = "http://fr.dbpedia.org/resource/" + nomDuPaysDeLaRequete.toLowerCase();
 
-            for (int i =0;i< spo.getJSONArray(0).length(); i++)
+            for (int i =0;i< spo.length(); i++)
             {
-                JSONObject item = spo.getJSONArray(0).getJSONObject(i);
+                JSONObject item = spo.getJSONObject(i);
 
                 if(item.getJSONObject("s").getString("value").toLowerCase().equals(dbpediaCountryURI)
                         && item.getJSONObject("p").getString("value").equals("http://fr.dbpedia.org/property/superficieTotale"))
@@ -39,8 +39,6 @@ public class CountryRecap
                 jsReturn.put("Superficie",superficie);
             if(population != null)
                 jsReturn.put("population",population);
-
-            System.out.println(jsReturn.toString(4));
 
             return jsReturn;
         }

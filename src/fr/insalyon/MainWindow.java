@@ -13,13 +13,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-import static fr.insalyon.CountryRecap.GetCountryRecap;
+import static fr.insalyon.CountryRecap.GetCountryRecapFromSparql;
+import static fr.insalyon.Spotlight.GetLinksSpotlight;
 
 public class MainWindow extends JFrame implements ActionListener {
     JTextField m_searchText;
     JButton m_searchButton;
+    JButton m_countryButton;
 
     JTextArea m_resultArea;
+
+    final static String LANGUAGE = "fr";
+    final static String LOCALE = "fr";
 
     //public final Dimension DIM_SEARCHBAR = new Dimension (300, 400);
 
@@ -44,6 +49,10 @@ public class MainWindow extends JFrame implements ActionListener {
         m_searchButton = new JButton("Rechercher");
         m_searchButton.addActionListener(this);
         searchBar.add(m_searchButton);
+
+        m_countryButton = new JButton("Rechercher Pays");
+        m_countryButton.addActionListener(this);
+        searchBar.add(m_countryButton);
 
         pane.add(searchBar, BorderLayout.PAGE_START);
 
@@ -78,15 +87,26 @@ public class MainWindow extends JFrame implements ActionListener {
             } catch (JSONException e1) {
                 e1.printStackTrace();
             }
+        }
+        if (e.getSource() == m_countryButton) {
 
-            GetCountryRecap(m_searchText.getText(), resultats);
+            try {
+            JSONArray json = Sparql.GetDataSparql(GetLinksSpotlight(m_searchText.getText(), 0.1, 0, LANGUAGE), LANGUAGE);
+
+            JSONObject recapCountry = GetCountryRecapFromSparql(m_searchText.getText(), json);
+
+            m_resultArea.setText(recapCountry.toString(4));
+
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
         }
     }
 
     private static JSONArray recupererResultats(String requete) {
         List<String> liens;
         try {
-            liens = HTMLContentParser.getListURLForDuckDuckGo(HTTPQueryHandler.queryDuckDuckGo(requete));
+            liens = HTMLContentParser.getListURLForDuckDuckGo(HTTPQueryHandler.queryDuckDuckGo(requete, LANGUAGE, LOCALE));
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -130,7 +150,7 @@ public class MainWindow extends JFrame implements ActionListener {
                     para.append("\n");
                 }
 
-                JSONArray json = Sparql.GetDataSparql(s.GetLinksSpotlight(para.toString(), 0.8, 0, "en"), "en");
+                JSONArray json = Sparql.GetDataSparql(s.GetLinksSpotlight(para.toString(), 0.8, 0, LANGUAGE), LANGUAGE);
 
                 GraphCache.sauvergarderGraph(lien, json);
 
