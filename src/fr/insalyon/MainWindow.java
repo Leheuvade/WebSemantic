@@ -160,7 +160,7 @@ public class MainWindow extends JFrame implements ActionListener {
                 }
                 if(recapCountry.has("dirigeants"))
                 {
-                    m_resultArea.append("Dirigeants : " + recapCountry.getString("dirigeants") + "\n");
+                    m_resultArea.append("Dirigeants : " + recapCountry.getJSONArray("dirigeants").toString() + "\n");
                 }
 
             m_resultArea.setText("<html><h3><strong>Pays recherche : " + Pays + "</strong>" +
