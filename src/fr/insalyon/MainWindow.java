@@ -9,6 +9,8 @@ import org.jsoup.nodes.Document;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -69,6 +71,37 @@ public class MainWindow extends JFrame implements ActionListener {
 
         m_resultArea = new JEditorPane();
         m_resultArea.setContentType("text/html");
+        m_resultArea.setEditable(false);
+
+        m_resultArea.addHyperlinkListener(new HyperlinkListener() {
+            public void hyperlinkUpdate(HyperlinkEvent e) {
+                if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                    m_searchText.setText(e.getDescription());
+                    JSONArray resultats = recupererResultats(e.getDescription());
+
+                    JSONArray mergedArray = new JSONArray();
+
+                    for (Object res : resultats) {
+                        for (Object spo : (JSONArray)res) {
+                            mergedArray.put(spo);
+                        }
+                    }
+
+                    Pertinence similarities = new Pertinence();
+
+                    StringBuilder html = new StringBuilder();
+                    List<String> mots = similarities.pertinence(mergedArray);
+
+                    html.append("<html>");
+                    for (String mot : mots) {
+                        html.append("<a href=\"" + mot + "\">" + mot + "</a> <br/>");
+                    }
+                    html.append("</html>");
+
+                    m_resultArea.setText(html.toString());
+                }
+            }
+        });
 
         searchPart.add(m_resultArea, BorderLayout.CENTER);
 
@@ -121,7 +154,16 @@ public class MainWindow extends JFrame implements ActionListener {
 
             Pertinence similarities = new Pertinence();
 
-            m_resultArea.setText(similarities.pertinence(mergedArray).toString());
+            StringBuilder html = new StringBuilder();
+            List<String> mots = similarities.pertinence(mergedArray);
+
+            html.append("<html>");
+            for (String mot : mots) {
+                html.append("<a href=\"" + mot + "\">" + mot + "</a> <br/>");
+            }
+            html.append("</html>");
+
+            m_resultArea.setText(html.toString());
         }
         if (e.getSource() == m_countryButton) {
 
@@ -278,7 +320,7 @@ public class MainWindow extends JFrame implements ActionListener {
 
         for (String lien : liens) {
             compteur++;
-            if(compteur >= 10)
+            if(compteur >= 6)
             {
                 break;
             }
