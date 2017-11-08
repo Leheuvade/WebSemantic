@@ -23,7 +23,7 @@ public class MainWindow extends JFrame implements ActionListener {
     JButton m_searchButton;
     JButton m_countryButton;
 
-    JTextArea m_resultArea;
+    JEditorPane m_resultArea;
     JTextArea m_similarityArea;
 
     JTextField m_url1Similarity;
@@ -67,8 +67,8 @@ public class MainWindow extends JFrame implements ActionListener {
 
         searchPart.add(searchBar, BorderLayout.PAGE_START);
 
-        m_resultArea = new JTextArea();
-        m_resultArea.setLineWrap(true);
+        m_resultArea = new JEditorPane();
+        m_resultArea.setContentType("text/html");
 
         searchPart.add(m_resultArea, BorderLayout.CENTER);
 
@@ -135,39 +135,51 @@ public class MainWindow extends JFrame implements ActionListener {
             String Population = "";
             String Superficie = "";
             String urlThumbnailFlag = "";
+            String Dirigeants = "";
+
+            String html ="<html>";
 
                 System.out.println(recapCountry.toString(4));
 
                 if(recapCountry.has("Pays"))
                 {
                     Pays = recapCountry.getString("Pays");
-                }
-                if(recapCountry.has("Capitale"))
-                {
-                    Capitale = recapCountry.getString("Capitale");
-                }
-                if(recapCountry.has("Population"))
-                {
-                    Population = recapCountry.getString("Population");
-                }
-                if(recapCountry.has("Superficie"))
-                {
-                    Superficie = recapCountry.getString("Superficie");
+                    html += "<h3><strong>Pays recherche : " + Pays + "</strong></h3>";
                 }
                 if(recapCountry.has("urlThumbnailFlag"))
                 {
                     urlThumbnailFlag = recapCountry.getString("urlThumbnailFlag");
+                    html+= " <img src=\" "+ urlThumbnailFlag + "\" alt=\"\" /></h3>";
                 }
-                if(recapCountry.has("dirigeants"))
+                if(recapCountry.has("Capitale"))
                 {
-                    m_resultArea.append("Dirigeants : " + recapCountry.getJSONArray("dirigeants").toString() + "\n");
+                    Capitale = recapCountry.getString("Capitale");
+                    html += "<p>- Capitale : "+ Capitale+"</p>";
+                }
+                if(recapCountry.has("Population"))
+                {
+                    Population = recapCountry.getString("Population");
+                    html +=    "<p>- Population : "+ Population+" habitants</p>";
+
+                }
+                if(recapCountry.has("Superficie"))
+                {
+                    Superficie = recapCountry.getString("Superficie");
+                    html += "<p>- Superficie : "+ Superficie+" km2</p>";
+
                 }
 
-            m_resultArea.setText("<html><h3><strong>Pays recherche : " + Pays + "</strong>" +
-                    " <img src=\" "+ urlThumbnailFlag + "\" alt=\"\" /></h3>" +
-                    "<p>- Capitale : "+ Capitale+"</p>" +
-                    "<p>- Superficie : "+ Superficie+"</p>" +
-                    "<p>- Population : "+ Population+"</p></html>");
+                if(recapCountry.has("dirigeants"))
+                {
+                    Dirigeants =  recapCountry.getJSONArray("dirigeants").toString();
+                    html +=  "<p>- Dirigeants : "+ Dirigeants+"</p>" ;
+
+                }
+
+                html += "</html>";
+
+            m_resultArea.setText(html);
+
 
             } catch (Exception e1) {
                 e1.printStackTrace();
