@@ -1,14 +1,10 @@
 package fr.insalyon;
 
-import jdk.nashorn.internal.parser.JSONParser;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.nodes.Document;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import java.awt.*;
@@ -24,22 +20,20 @@ public class MainWindow extends JFrame implements ActionListener {
     JTextField m_searchText;
     JButton m_searchButton;
     JButton m_countryButton;
+    JButton m_compareButton;
 
     JEditorPane m_resultArea;
     JTextArea m_similarityArea;
 
     JTextField m_url1Similarity;
     JTextField m_url2Similarity;
-    JButton m_compareButton;
 
     final static String LANGUAGE = "fr";
     final static String LOCALE = "fr";
 
-    //public final Dimension DIM_SEARCHBAR = new Dimension (300, 400);
-
     public MainWindow() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setTitle("TrucDeRecherche");
+        setTitle("TP Web Semantique");
 
         Container pane = getContentPane();
         pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
@@ -49,8 +43,6 @@ public class MainWindow extends JFrame implements ActionListener {
 
         JPanel searchBar = new JPanel();
         searchBar.setLayout(new BoxLayout(searchBar, BoxLayout.X_AXIS));
-        //searchBar.setMinimumSize(DIM_SEARCHBAR);
-        //searchBar.setPreferredSize(DIM_SEARCHBAR);
 
         JLabel searchLabel = new JLabel("DuckDuckGo : ");
         searchBar.add(searchLabel);
@@ -74,6 +66,7 @@ public class MainWindow extends JFrame implements ActionListener {
         m_resultArea.setEditable(false);
 
         m_resultArea.addHyperlinkListener(new HyperlinkListener() {
+
             public void hyperlinkUpdate(HyperlinkEvent e) {
                 if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                     m_searchText.setText(e.getDescription());
@@ -106,7 +99,6 @@ public class MainWindow extends JFrame implements ActionListener {
         searchPart.add(m_resultArea, BorderLayout.CENTER);
 
         pane.add(searchPart);
-
 
         JPanel similarityPart = new JPanel();
         similarityPart.setLayout(new BorderLayout());
@@ -188,11 +180,6 @@ public class MainWindow extends JFrame implements ActionListener {
                     Pays = recapCountry.getString("Pays");
                     html += "<h3><strong>Pays recherche : " + Pays + "</strong></h3>";
                 }
-                if(recapCountry.has("urlThumbnailFlag"))
-                {
-                    urlThumbnailFlag = recapCountry.getString("urlThumbnailFlag");
-                    html+= " <img src=\" "+ urlThumbnailFlag + "\" alt=\"\" /></h3>";
-                }
                 if(recapCountry.has("Capitale"))
                 {
                     Capitale = recapCountry.getString("Capitale");
@@ -215,6 +202,12 @@ public class MainWindow extends JFrame implements ActionListener {
                 {
                     Dirigeants =  recapCountry.getJSONArray("dirigeants").toString();
                     html +=  "<p>- Dirigeants : "+ Dirigeants+"</p>" ;
+
+                }
+                if(recapCountry.has("urlThumbnailFlag"))
+                {
+                    urlThumbnailFlag = recapCountry.getString("urlThumbnailFlag");
+                    html += "<p>- url du drapeau : "+ urlThumbnailFlag+"</p>";
 
                 }
 
@@ -358,7 +351,6 @@ public class MainWindow extends JFrame implements ActionListener {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
 
         return graphs;

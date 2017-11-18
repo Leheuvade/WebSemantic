@@ -18,7 +18,6 @@ public class CountryRecap
             String capitale = null;
             String urlThumbnailFlag = null;
 
-
             String dbpediaCountryURI = "http://fr.dbpedia.org/resource/" + nomDuPaysDeLaRequete.toLowerCase();
             ArrayList<String> dirigeants = new ArrayList<String>();
 

@@ -12,9 +12,7 @@ public class HttpGet
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("GET");
         con.setRequestProperty("Accept", "application/json");
-        //con.setRequestProperty("User-Agent", USER_AGENT);
         int responseCode = con.getResponseCode();
-        //System.out.println("GET Response Code :: " + responseCode);
 
         if (responseCode == HttpURLConnection.HTTP_OK) { // success
             BufferedReader in = new BufferedReader(new InputStreamReader(
@@ -27,9 +25,6 @@ public class HttpGet
             }
 
             in.close();
-
-            // print result in XML
-            //System.out.println(response.toString());
 
             return response.toString();
         } else {

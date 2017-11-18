@@ -8,25 +8,23 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.net.ssl.SSLContext;
-
 
 public class Spotlight
 {
-    final static int textMaxLength = 5000;
+    final static int textMaxLength = 5000; //La requête échoue du côté de dbpedia si l'url est trop longue
 
     public static JSONObject GetLinksSpotlight(String text, double confidence, int support, String language) throws IOException, JSONException {
 
-        if (text.trim().length() <= 0)
-            return new JSONObject().put("URIs", new JSONArray());
+        JSONObject JsonSpotlightResponse = new JSONObject().put("URIs", new JSONArray());
+
+        if (text.trim().length() <= 0){
+            return JsonSpotlightResponse;
+        }
 
         text = text.substring(0, Math.min(text.length(), textMaxLength));
 
-
         try
         {
-            JSONObject JsonSpotlightResponse = new JSONObject().put("URIs", new JSONArray());
-
             String URL = "http://model.dbpedia-spotlight.org/" + language + "/annotate?text=" + URLEncoder.encode(text,"UTF-8") + "&confidence="+confidence+"&support="+support;
             URL url = new URL(URL);
 
@@ -38,21 +36,13 @@ public class Spotlight
             {
                 JSONArray listeURI = jsonResponse.getJSONArray("Resources");
 
-
                 //Creation du Json final
-                JSONArray arrayOfURI = new JSONArray();
-
 
                 for (int i = 0; i < listeURI.length(); ++i) {
                     String URI = listeURI.getJSONObject(i).getString("@URI");
 
-                    //arrayOfURI.put(URI);
-
                     JsonSpotlightResponse.getJSONArray("URIs").put(URI);
                 }
-
-                //JsonSpotlightResponse.put("URIs", arrayOfURI);
-
             }
 
             return JsonSpotlightResponse;
