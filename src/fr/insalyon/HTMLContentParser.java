@@ -9,6 +9,11 @@ import java.util.List;
 
 
 public class HTMLContentParser {
+    /**
+     * Get list of links returned by a research on duckduckgo
+     * @param resultHtml Page HTML return by duckduckgo after the research
+     * @return List<String> List links returned
+     */
     public static List<String> getListURLForDuckDuckGo(Document resultHtml) {
         Elements newsHeadlines = resultHtml.select(".result__a");
 
@@ -22,6 +27,11 @@ public class HTMLContentParser {
         return liens;
     }
 
+    /**
+     * Get list of balise p in a HTML page
+     * @param resultHtml HTML page to analyze
+     * @return List<String> List balise <p>
+     */
     public static List<String> getParagraphsForDocument(Document resultHtml) {
         Elements paragraphElements = resultHtml.select("body p");
 

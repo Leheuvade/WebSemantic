@@ -6,10 +6,13 @@ import org.json.JSONObject;
 import java.util.*;
 
 public class Pertinence {
+    /**
+     * Get the most relevant subjects (s) in the graph
+     * @param graph
+     * @return List<String> List ordered of the most relevant subjects(s)
+     */
     public List<String> pertinence(JSONArray graph) {
         HashMap<String,Integer> motCleOccurrence= new HashMap<>();
-
-        int occurence;
 
         for (int i = 0; i < graph.length(); i++) {
             JSONObject lien = (JSONObject) graph.get(i);

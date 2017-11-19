@@ -1,12 +1,8 @@
 package fr.insalyon;
 
-import jdk.nashorn.internal.parser.JSONParser;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import javax.swing.text.html.parser.Parser;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -15,9 +11,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 public class GraphCache {
+    /**
+     * Get an encoded name for an URL given
+     */
     private static String getFileNameForURL(String URL) {
         MessageDigest cript = null;
         try {
@@ -38,6 +36,9 @@ public class GraphCache {
         return fileName;
     }
 
+    /**
+     * Get a JSONArray from a search URL, if the cache file exists
+     */
     public static JSONArray recupererGraph(String URL) {
         String fileName = getFileNameForURL(URL);
 
@@ -58,6 +59,9 @@ public class GraphCache {
         return graph;
     }
 
+    /**
+     * Put the graph content (json format) obtained from a search URL into a cache file
+     */
     public static void sauvergarderGraph(String URL, JSONArray graph) {
         String fileName = getFileNameForURL(URL);
 
