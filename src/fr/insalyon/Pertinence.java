@@ -11,7 +11,7 @@ public class Pertinence {
      * @param graph
      * @return List<String> List ordered of the most relevant subjects(s)
      */
-    public List<String> pertinence(JSONArray graph) {
+    public static List<String> pertinence(JSONArray graph) {
         HashMap<String,Integer> motCleOccurrence= new HashMap<>();
 
         for (int i = 0; i < graph.length(); i++) {
