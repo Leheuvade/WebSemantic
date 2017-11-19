@@ -9,6 +9,13 @@ import java.net.URLEncoder;
 
 public class Sparql
 {
+    /**
+     * Execute a sparql request on dbpedia to find "subject, predicate, object"
+     * couples from the URIs passed in parameter
+     * @param jsonFromSpotlight : a jsonObject that contains an array of links at the key "URIs"
+     *        language : the language used to find resources on dbpedia
+     * @return JSONArray : an array of "subject, predicate, object" couples
+     */
     public static JSONArray GetDataSparql(JSONObject jsonFromSpotlight, String language)
     {
         JSONArray jsonReturn = new JSONArray();
@@ -42,6 +49,12 @@ public class Sparql
         return jsonReturn;
     }
 
+    /**
+     * Create a sparql request on dbpedia to find "subject, predicate, object"
+     * couples from the URIs passed in parameter
+     * @param jsonFromSpotlight : a jsonObject that contains an array of links at the key "URIs"
+     * @return String : a sparql request
+     */
     private static String createRequest(JSONObject jsonFromSpotlight)
     {
         String request =

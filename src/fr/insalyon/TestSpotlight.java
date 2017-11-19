@@ -7,6 +7,8 @@ import org.junit.Test;
 import static fr.insalyon.Spotlight.GetLinksSpotlight;
 import static org.junit.Assert.assertEquals;
 
+/* Unit tests for Spotlight class */
+
 public class TestSpotlight
 {
     @Test

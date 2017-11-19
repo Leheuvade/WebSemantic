@@ -8,6 +8,12 @@ import java.net.URL;
 
 public class HttpGet
 {
+
+    /**
+     * Get the resource at the passed URL
+     * @param obj the URL of the resource
+     * @return the resource in json format
+     */
     public static String sendGET(URL obj) throws IOException {
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("GET");
