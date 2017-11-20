@@ -8,6 +8,16 @@ import java.util.Arrays;
 
 public class CountryRecap
 {
+    /**
+     * Create a recap about a country with the name, the area, the population,
+     * the capital, the leaders and the flag of the country, based on dbpedia resources
+     * @param nomDuPaysDeLaRequete : the name of the country
+     *        spo : "subject, predicate, object" couples where
+     *              the subject is the country we want to recap
+     * @return JSONObject : a json object with "Superficie", "Population", "Capitale",
+     *                      "urlThumbnailFlag" and "dirigeants" keys, if the information
+     *                      is found in dbpedia
+     */
     public static JSONObject GetCountryRecapFromSparql(String nomDuPaysDeLaRequete, JSONArray spo)
     {
         try {
